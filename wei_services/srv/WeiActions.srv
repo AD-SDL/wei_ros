@@ -1,0 +1,4 @@
+string action
+string vars
+---
+bool action_response

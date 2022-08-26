@@ -19,8 +19,9 @@ setup(
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
-    entry_points={
+    entry_points={ 
         'console_scripts': [
-        ],
+            'wei_test_node = wei_executor.weiTestNode:main',
+        ]
     },
 )

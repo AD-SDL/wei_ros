@@ -27,12 +27,13 @@ class weiExecNode(Node):
         future = pf400Client.call_async(pf400Req)
         rclpy.spin_until_future_complete(self, future)  
 
-    def send_wei_command(self,service,command):
+    def send_wei_command(self,service,action_handle, action_vars={}):
         weiExecutor = self.create_client(WeiActions,service)
         while not weiExecutor.wait_for_service(timeout_sec=1.0):
             self.get_logger().info(service + ' service not available, waiting again...')
         weiReq = WeiActions.Request()
-        weiReq.action_request(command)
+        weiReq.action_handle=str(action_handle)
+        weiReq.vars=str(action_vars)
 
         future = weiExecutor.call_async(weiReq)
         rclpy.spin_until_future_complete(self, future)  

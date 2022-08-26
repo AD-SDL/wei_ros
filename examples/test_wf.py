@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from hudson_driver.sciclops_driver import sciclops_driver
 import rclpy
 from wei_executor.weiExecutorNode import weiExecNode
 
@@ -12,9 +11,9 @@ wei_execution_node = weiExecNode()
 ##module name 
 # for now this will be the full action_handler service address
 pf400_node = '/PF400_Joint_Node/action_handler'
-sciclops_node = ''
-sealer_node = ''
-peeler_node = ''
+sciclops_node = '/sciclopsNode/action_handler'
+sealer_node = '/sp_module/sealerNode/action_handler'
+peeler_node = '/sp_module/peelerNode/action_handler'
 
 
 ##Positions for PF400
@@ -26,9 +25,9 @@ cyclops_ext = [262.550, 20.608, 119.290, 662.570, 0.0, 574.367]
 flow_def = [
     {'node':sciclops_node,'action_handle':'get_plate','action_vars':{'pos':'tower1'}},
     {'node':pf400_node,'action_handle':'transfer','action_vars':{'pos1':cyclops_ext,'pos2':sealerPos}},
-#    {'node':sealer_node,'action_handle':'seal','action_vars':{'time':175,'temp':3}},
+    {'node':sealer_node,'action_handle':'seal','action_vars':{'time':175,'temp':3}},
     {'node':pf400_node,'action_handle':'transfer','action_vars':{'pos1':sealerPos,'pos2':peelerPos}},
-#    {'node':peeler_node,'action_handle':'peel','action_vars':{}},
+    {'node':peeler_node,'action_handle':'peel','action_vars':{}},
     {'node':pf400_node,'action_handle':'transfer','action_vars':{'pos1':peelerPos,'pos2':cyclops_ext}}
     ]
 

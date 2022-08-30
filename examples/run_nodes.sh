@@ -1,7 +1,7 @@
 
 
 
-source ~/wei_ws/install/setup.sh && 
-ros2 launch sp_module_client sp_module.launch.py && 
-ros2 run pf400_description pf400_Joint_Control && 
-ros2 run sciclops_client sciclops_client 
+source ~/wei_ws/install/setup.bash & 
+ros2 launch sp_module_client sp_module.launch.py &
+ros2 launch pf400_client pf400_client.launch.py & 
+ros2 launch sciclops_module_client sciclops_module.launch.py

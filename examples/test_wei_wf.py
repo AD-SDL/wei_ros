@@ -21,7 +21,7 @@ def wei_service_callback(step: Step , **kwargs):
     print(msg)
     print()
 
-    # wei_execution_node.send_wei_command(msg['node'],msg['action_handle'],msg['action_vars'])
+    wei_execution_node.send_wei_command(msg['node'],msg['action_handle'],msg['action_vars'])
 
 def print_callback(step, **kwargs):
     print("\nFrom callback")

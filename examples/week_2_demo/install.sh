@@ -2,8 +2,8 @@
 
 ROS_WS=~/wei_ws_dev_kyle
 
-mkdir $ROS_WS
-mkdir $ROS_WS/src
+mkdir -p $ROS_WS
+mkdir -p $ROS_WS/src
 cd $ROS_WS/src
 # git clone https://github.com/AD-SDL/azenta_driver
 # cd $ROS_WS/src/azenta_driver/

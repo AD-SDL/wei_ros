@@ -1,4 +1,4 @@
-ROS_WS=~/wei_ws
+ROS_WS=~/wei_ws_dev_kyle
 
 mkdir $ROS_WS
 mkdir $ROS_WS/src

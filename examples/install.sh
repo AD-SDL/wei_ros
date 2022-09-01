@@ -1,3 +1,5 @@
+#!bin/bash
+
 ROS_WS=~/wei_ws_dev_kyle
 
 mkdir $ROS_WS

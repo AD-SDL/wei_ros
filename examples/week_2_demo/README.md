@@ -17,7 +17,7 @@ bash install.sh
 ## Running the example
 
 ```
-bash run_nodes
+bash run_nodes.sh
 ```
 This will consume your terminal with a running command. Open a new terminal and navigate to this folder again.
 

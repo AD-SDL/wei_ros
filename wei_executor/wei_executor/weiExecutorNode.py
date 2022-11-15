@@ -2,8 +2,6 @@ import rclpy
 from rclpy.action import ActionClient
 from rclpy.node import Node
 
-from std_msgs.msg import String
-
 from wei_services.srv import WeiActions
 from std_msgs.msg import String
 
@@ -23,5 +21,14 @@ class weiExecNode(Node):
 
         future = weiExecutor.call_async(weiReq)
         rclpy.spin_until_future_complete(self, future)  
+    
+    def get_description(self, node_name):
+        pass
+
+    def grab_image(self, image_stream, image_name, path):
+        pass
+
+    def get_log(self, node_name):
+        pass
 
 

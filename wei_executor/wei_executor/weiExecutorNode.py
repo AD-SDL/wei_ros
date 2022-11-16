@@ -10,6 +10,8 @@ from rclpy.qos import qos_profile_sensor_data
 import cv2  # OpenCV library
 from cv_bridge import CvBridge 
 
+import os
+
 class weiExecNode(Node):
     def __init__(self):
         super().__init__('weiExecNode')
@@ -32,22 +34,20 @@ class weiExecNode(Node):
         pass
 
     def capture_image(self, image_stream, image_name, path):
-        self.image_name = image_name
-        self.image_path = path
-        rclpy.init(args=None)
-        node = rclpy.create_node('minimal_subscriber')
-        cameraSub = node.create_subscription(Image, "Camera_Publisher_Node/video_frames", self.save_image_callback, qos_profile_sensor_data)
-        cameraSub # prevent unused variable warning
-
-        rclpy.spin_once(node)
-        node.destroy_node()
-        rclpy.shutdown() 
+        self.image_path = os.path.join(path,image_name)
+#        node = rclpy.create_node('image_subscriber')
+        print('Naaa')
+        self.create_subscription(Image, image_stream, self.save_image_callback, qos_profile_sensor_data)
+        rclpy.spin_once(self,timeout_sec=10)
 
     def save_image_callback(self, data):
+        print('Savanah')
         br = CvBridge()
+        print('badabin')
         current_frame = br.imgmsg_to_cv2(data)
         if current_frame.any(): 
-            cv2.imwrite(self.image_path + self.image_name, current_frame)
+            print('Badaaabaa')
+            cv2.imwrite(self.image_path, current_frame)
 
         # Display image
         # cv2.imshow("camera", current_frame)

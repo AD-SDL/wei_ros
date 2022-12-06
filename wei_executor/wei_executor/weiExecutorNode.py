@@ -29,6 +29,8 @@ class weiExecNode(Node):
 
         future = weiExecutor.call_async(weiReq)
         rclpy.spin_until_future_complete(self, future)  
+        print(weiReq)
+        print(dir(weiReq))
     
     def get_description(self, node_name):
         pass

@@ -1,4 +1,5 @@
 string action_handle
 string vars
 ---
-bool action_response
+int16 action_response
+string return_msg

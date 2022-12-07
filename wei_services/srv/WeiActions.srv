@@ -2,4 +2,4 @@ string action_handle
 string vars
 ---
 int16 action_response
-string return_msg
+string action_msg

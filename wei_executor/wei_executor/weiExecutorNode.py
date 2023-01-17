@@ -53,10 +53,10 @@ class weiExecNode(Node):
         br = CvBridge()
         current_frame = br.imgmsg_to_cv2(data)
         if current_frame.any(): 
-            self.get_logger.info("Received an image!")
+            self.get_logger().info("Received an image!")
             cv2.imwrite(self.image_path, current_frame)
-            self.get_logger.info("Image is saved to " + str(self.image_path))
-            
+            self.get_logger().info("Image is saved to " + str(self.image_path))
+
         # Display image
         cv2.imshow("camera", current_frame)
         cv2.waitKey(1)

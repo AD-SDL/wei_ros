@@ -43,10 +43,10 @@ class weiExecNode(Node):
         print(res.description)
         return res.description
 
-    def capture_image(self, image_stream, image_name, path):
+    def capture_image(self, image_stream, image_name, path, node_name = "CameraPublisher1"):
         self.image_path = os.path.join(path,image_name)
 #        node = rclpy.create_node('image_subscriber')
-        self.create_subscription(Image, "/std_ns/CameraPublisher1/video_frames", self.save_image_callback, qos_profile_sensor_data)
+        self.create_subscription(Image, "/std_ns/" + node_name + "/video_frames", self.save_image_callback, qos_profile_sensor_data)
         rclpy.spin_once(self,timeout_sec=10)
 
     def save_image_callback(self, data):

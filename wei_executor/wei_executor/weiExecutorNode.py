@@ -16,6 +16,7 @@ class weiExecNode(Node):
         super().__init__('weiExecNode')
         self.image_path = ""
         self.image_name = ""
+        self.image_rotation = 0
                                                 
 
     def send_wei_command(self,ros_node,action_handle, action_vars={}):
@@ -43,10 +44,11 @@ class weiExecNode(Node):
         print(res.description)
         return res.description
 
-    def capture_image(self, node_name, image_name = "camera_image.png", path = "~/"):
+    def capture_image(self, node_name, image_name = "camera_image.png", path = "~/",rotation=0):
         self.image_path = os.path.join(path, image_name)
         image_stream = node_name + "/video_frames"
-        print(image_stream)
+        self.image_rotation = rotation
+        self.get_logger().info(image_stream)
         self.create_subscription(Image, image_stream, self.save_image_callback, qos_profile_sensor_data)
         rclpy.spin_once(self,timeout_sec=10)
 
@@ -55,13 +57,9 @@ class weiExecNode(Node):
         current_frame = br.imgmsg_to_cv2(data)
         if current_frame.any(): 
             self.get_logger().info("Received an image!")
-            print('batata')
+            current_frame = cv2.rotate(current_frame, self.image_rotation)
             cv2.imwrite(self.image_path, current_frame)
             self.get_logger().info("Image is saved to " + str(self.image_path))
-
-        # Display image
-        cv2.imshow("camera", current_frame)
-        cv2.waitKey(1)
 
     def get_log(self, node_name):
         pass

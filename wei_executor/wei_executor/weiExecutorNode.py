@@ -9,11 +9,14 @@ from rclpy.qos import qos_profile_sensor_data
 import cv2  # OpenCV library
 from cv_bridge import CvBridge 
 
+from time import sleep
+
 import os
 
 class weiExecNode(Node):
     def __init__(self):
         super().__init__('weiExecNode')
+        self.camera_sub = None
         self.image_path = ""
         self.image_name = ""
         self.image_rotation = 0
@@ -48,9 +51,15 @@ class weiExecNode(Node):
         self.image_path = os.path.join(path, image_name)
         image_stream = node_name + "/video_frames"
         self.image_rotation = rotation
-        self.get_logger().info(image_stream)
-        self.create_subscription(Image, image_stream, self.save_image_callback, qos_profile_sensor_data)
-        rclpy.spin_once(self,timeout_sec=10)
+        self.get_logger().info('Image from: ' + image_stream)
+        self.camera_sub = self.create_subscription(Image, image_stream, self.save_image_callback, qos_profile_sensor_data)
+        self.camera_sub
+
+        while not os.path.exists(self.image_path):
+            rclpy.spin_once(self,timeout_sec=10)
+
+        rclpy.shutdown()
+        return self.image_path
 
     def save_image_callback(self, data):
         br = CvBridge()

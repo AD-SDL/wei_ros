@@ -58,7 +58,6 @@ class weiExecNode(Node):
         while not os.path.exists(self.image_path):
             rclpy.spin_once(self,timeout_sec=10)
 
-        rclpy.shutdown()
         return self.image_path
 
     def save_image_callback(self, data):

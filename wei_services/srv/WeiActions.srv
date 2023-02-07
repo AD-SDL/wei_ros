@@ -3,3 +3,4 @@ string vars
 ---
 int16 action_response
 string action_msg
+string resources

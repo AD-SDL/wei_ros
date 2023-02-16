@@ -35,7 +35,8 @@ class weiExecNode(Node):
         res = future.result()
         print(res.action_response)
         print(res.action_msg)
-        return res.action_response, res.action_msg
+        print(res.resources)
+        return res.action_response, res.action_msg, res.resources
     
     def get_description(self, node_name):
         weiDescClient = self.create_client(WeiDescription,node_name+'/get_description')
@@ -58,7 +59,6 @@ class weiExecNode(Node):
         while not os.path.exists(self.image_path):
             rclpy.spin_once(self,timeout_sec=10)
 
-        rclpy.shutdown()
         return self.image_path
 
     def save_image_callback(self, data):

@@ -35,8 +35,8 @@ class weiExecNode(Node):
         res = future.result()
         print(res.action_response)
         print(res.action_msg)
-        print(res.resources)
-        return res.action_response, res.action_msg, res.resources
+        print(res.action_log)
+        return res.action_response, res.action_msg, res.action_log
     
     def get_description(self, node_name):
         weiDescClient = self.create_client(WeiDescription,node_name+'/get_description')

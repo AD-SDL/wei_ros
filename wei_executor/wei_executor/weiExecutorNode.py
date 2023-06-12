@@ -8,8 +8,7 @@ from rclpy.qos import qos_profile_sensor_data
 
 import cv2  # OpenCV library
 from cv_bridge import CvBridge 
-
-from time import sleep
+import json
 
 import os
 
@@ -28,8 +27,8 @@ class weiExecNode(Node):
             self.get_logger().info(ros_node + ' service not available, waiting again...')
         weiReq = WeiActions.Request()
         weiReq.action_handle=str(action_handle)
-        weiReq.vars=str(action_vars)
-
+        weiReq.vars=json.dumps(action_vars)
+        print(weiReq.vars)
         future = weiActionClient.call_async(weiReq)
         rclpy.spin_until_future_complete(self, future)  
         res = future.result()

@@ -21,15 +21,16 @@ class weiExecNode(Node):
         self.image_name = ""
         self.image_rotation = 0
         self.goal = None
+        self.feedback = None
+        self.result = None
    
     def send_goal(self, ros_node, robot_goal) -> None:
         """Send action goal"""
         
         self._action_client = ActionClient(self, RobotAction, self.node_name + '/robot_action')
-        while not self._action_client.wait_for_service(timeout_sec=1.0):
-            self.get_logger().info(ros_node + ' service not available, waiting again...')
+        while not self._action_client.wait_for_server():
+            self.get_logger().info(ros_node + 'Action server not available, waiting ...')
 
-        self._action_client.wait_for_server()
         self.goal = json.dumps(robot_goal)
         
         weiGoal = RobotAction.Goal()
@@ -39,6 +40,8 @@ class weiExecNode(Node):
         rclpy.spin_until_future_complete(self, self._send_goal_future) 
         self._send_goal_future.add_done_callback(self.goal_response_callback)
 
+        return self.result
+    
     def goal_response_callback(self, future) -> None:
         goal_handle = future.result()
         if not goal_handle.accepted:
@@ -51,12 +54,12 @@ class weiExecNode(Node):
         self._get_result_future.add_done_callback(self.get_result_callback)
 
     def get_result_callback(self, future) -> None:
-        result = future.result().result
-        self.get_logger().info('Result: {0}'.format(result.robot_response))
+        self.result = future.result().result
+        self.get_logger().info('Result: {0}'.format(self.result.robot_response))
         rclpy.shutdown()
 
     def feedback_callback(self, feedback_msg) -> None:
-        feedback = feedback_msg.feedback
+        self.feedback = feedback_msg.feedback
         self.get_logger().info('Received feedback:' + feedback.robot_feedback)
     #-----------                                             
     def send_wei_command(self,ros_node,action_handle, action_vars={}):

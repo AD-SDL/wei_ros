@@ -25,17 +25,17 @@ class weiExecNode(Node):
         self.feedback = None
         self.result = None
    
-    def send_wei_goal(self, ros_node, robot_goal) -> None:
+    def send_wei_goal(self, ros_node, wei_goal) -> None:
         """Send action goal"""
         
-        self._action_client = ActionClient(self, WeiAction, ros_node + '/robot_action')
+        self._action_client = ActionClient(self, WeiAction, ros_node + '/wei_action')
         while not self._action_client.wait_for_server():
             self.get_logger().info(ros_node + 'Action server not available, waiting ...')
 
-        self.goal = json.dumps(robot_goal)
+        self.goal = json.dumps(wei_goal)
         
         weiGoal = WeiAction.Goal()
-        weiGoal.robot_goal = self.goal
+        weiGoal.wei_goal = self.goal
         print(weiGoal)
         self._send_goal_future = self._action_client.send_goal_async(weiGoal, feedback_callback=self.feedback_callback)
         rclpy.spin_until_future_complete(self, self._send_goal_future) 

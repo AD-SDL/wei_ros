@@ -1,5 +1,5 @@
-string robot_goal # Goal
+string wei_goal # Goal
 ---
-string robot_response # Result 
+string wei_response # Result 
 ---
-string robot_feedback #Feedback
+string wei_feedback #Feedback

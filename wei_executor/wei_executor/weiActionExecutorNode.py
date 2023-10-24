@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 from rclpy.action import ActionClient
 
+from wei_interfaces.action import WeiAction
 # from wei_services.srv import WeiActions
 # from wei_services.srv import WeiDescription
 from sensor_msgs.msg import Image  
@@ -27,13 +28,13 @@ class weiExecNode(Node):
     def send_goal(self, ros_node, robot_goal) -> None:
         """Send action goal"""
         
-        self._action_client = ActionClient(self, RobotAction, self.node_name + '/robot_action')
+        self._action_client = ActionClient(self, WeiAction, self.node_name + '/robot_action')
         while not self._action_client.wait_for_server():
             self.get_logger().info(ros_node + 'Action server not available, waiting ...')
 
         self.goal = json.dumps(robot_goal)
         
-        weiGoal = RobotAction.Goal()
+        weiGoal = WeiAction.Goal()
         weiGoal.robot_goal = self.goal
         print(weiGoal)
         self._send_goal_future = self._action_client.send_goal_async(weiGoal, feedback_callback=self.feedback_callback)

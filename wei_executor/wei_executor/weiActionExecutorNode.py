@@ -3,19 +3,13 @@ from rclpy.node import Node
 from rclpy.action import ActionClient
 
 from wei_interfaces.action import WeiAction
-from wei_services.srv import WeiActions
-<<<<<<< HEAD
-from wei_services.srv import WeiDescription
-from ur_interfaces.action import RobotAction
-
-=======
+# from wei_services.srv import WeiActions
 # from wei_services.srv import WeiDescription
->>>>>>> e34e7bf096b1224a5aa4d1ee00a38f0b1595406c
-from sensor_msgs.msg import Image  
-from rclpy.qos import qos_profile_sensor_data
+# from sensor_msgs.msg import Image  
+# from rclpy.qos import qos_profile_sensor_data
 
-import cv2  # OpenCV library
-from cv_bridge import CvBridge 
+# import cv2  # OpenCV library
+# from cv_bridge import CvBridge 
 import json
 
 import os
@@ -68,11 +62,9 @@ class weiExecNode(Node):
     def feedback_callback(self, feedback_msg) -> None:
         self.feedback = feedback_msg.feedback
         self.get_logger().info('Received feedback:' + self.feedback.robot_feedback)
-<<<<<<< HEAD
-
-=======
+    
     #-----------                                             
->>>>>>> e34e7bf096b1224a5aa4d1ee00a38f0b1595406c
+    
     def send_wei_command(self,ros_node,action_handle, action_vars={}):
         weiActionClient = self.create_client(WeiActions,ros_node+'/action_handler')
         while not weiActionClient.wait_for_service(timeout_sec=1.0):
@@ -100,26 +92,28 @@ class weiExecNode(Node):
         return res.description
 
     def capture_image(self, node_name, image_name = "camera_image.png", path = "~/",rotation=0):
-        self.image_path = os.path.join(path, image_name)
-        image_stream = node_name + "/video_frames"
-        self.image_rotation = rotation
-        self.get_logger().info('Image from: ' + image_stream)
-        self.camera_sub = self.create_subscription(Image, image_stream, self.save_image_callback, qos_profile_sensor_data)
-        self.camera_sub
+        # self.image_path = os.path.join(path, image_name)
+        # image_stream = node_name + "/video_frames"
+        # self.image_rotation = rotation
+        # self.get_logger().info('Image from: ' + image_stream)
+        # self.camera_sub = self.create_subscription(Image, image_stream, self.save_image_callback, qos_profile_sensor_data)
+        # self.camera_sub
 
-        while not os.path.exists(self.image_path):
-            rclpy.spin_once(self,timeout_sec=10)
+        # while not os.path.exists(self.image_path):
+        #     rclpy.spin_once(self,timeout_sec=10)
 
-        return self.image_path
+        # return self.image_path
+        pass
 
     def save_image_callback(self, data):
-        br = CvBridge()
-        current_frame = br.imgmsg_to_cv2(data)
-        if current_frame.any(): 
-            self.get_logger().info("Received an image!")
-            current_frame = cv2.rotate(current_frame, self.image_rotation)
-            cv2.imwrite(self.image_path, current_frame)
-            self.get_logger().info("Image is saved to " + str(self.image_path))
+        # br = CvBridge()
+        # current_frame = br.imgmsg_to_cv2(data)
+        # if current_frame.any(): 
+        #     self.get_logger().info("Received an image!")
+        #     current_frame = cv2.rotate(current_frame, self.image_rotation)
+        #     cv2.imwrite(self.image_path, current_frame)
+        #     self.get_logger().info("Image is saved to " + str(self.image_path))
+        pass
 
     def get_log(self, node_name):
         pass

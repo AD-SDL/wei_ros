@@ -2,10 +2,15 @@ import rclpy
 from rclpy.node import Node
 from rclpy.action import ActionClient
 
+from wei_interfaces.action import WeiAction
 from wei_services.srv import WeiActions
+<<<<<<< HEAD
 from wei_services.srv import WeiDescription
 from ur_interfaces.action import RobotAction
 
+=======
+# from wei_services.srv import WeiDescription
+>>>>>>> e34e7bf096b1224a5aa4d1ee00a38f0b1595406c
 from sensor_msgs.msg import Image  
 from rclpy.qos import qos_profile_sensor_data
 
@@ -26,17 +31,17 @@ class weiExecNode(Node):
         self.feedback = None
         self.result = None
    
-    def send_goal(self, ros_node, robot_goal) -> None:
+    def send_wei_goal(self, ros_node, wei_goal) -> None:
         """Send action goal"""
         
-        self._action_client = ActionClient(self, RobotAction, self.node_name + '/robot_action')
+        self._action_client = ActionClient(self, WeiAction, ros_node + '/wei_action')
         while not self._action_client.wait_for_server():
             self.get_logger().info(ros_node + 'Action server not available, waiting ...')
 
-        self.goal = json.dumps(robot_goal)
+        self.goal = json.dumps(wei_goal)
         
-        weiGoal = RobotAction.Goal()
-        weiGoal.robot_goal = self.goal
+        weiGoal = WeiAction.Goal()
+        weiGoal.wei_goal = self.goal
         print(weiGoal)
         self._send_goal_future = self._action_client.send_goal_async(weiGoal, feedback_callback=self.feedback_callback)
         rclpy.spin_until_future_complete(self, self._send_goal_future) 
@@ -63,7 +68,11 @@ class weiExecNode(Node):
     def feedback_callback(self, feedback_msg) -> None:
         self.feedback = feedback_msg.feedback
         self.get_logger().info('Received feedback:' + self.feedback.robot_feedback)
+<<<<<<< HEAD
 
+=======
+    #-----------                                             
+>>>>>>> e34e7bf096b1224a5aa4d1ee00a38f0b1595406c
     def send_wei_command(self,ros_node,action_handle, action_vars={}):
         weiActionClient = self.create_client(WeiActions,ros_node+'/action_handler')
         while not weiActionClient.wait_for_service(timeout_sec=1.0):
@@ -115,4 +124,9 @@ class weiExecNode(Node):
     def get_log(self, node_name):
         pass
 
+if __name__ == "__main__":
+    rclpy.init()
+    node = weiExecNode()
+
+    node.send_wei_goal("/ur_module","pick")
 

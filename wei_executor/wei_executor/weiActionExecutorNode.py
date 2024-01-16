@@ -16,12 +16,9 @@ import os
 class weiExecNode(Node):
     """Basic Interface for interacting with WEI modules using ROS2"""
 
-    def __init__(self):
-        super().__init__('weiExecNode')
-        self.camera_sub = None
-        self.image_path = ""
-        self.image_name = ""
-        self.image_rotation = 0
+    def __init__(self, node_name = 'weiExecNode'):
+        super().__init__(node_name)
+
         self.goal = None
         self.feedback = None
         self.result = None
@@ -67,10 +64,10 @@ class weiExecNode(Node):
     #-----------                                             
     
     def send_wei_command(self,ros_node,action_handle, action_vars={}):
-        weiActionClient = self.create_client(WeiActions,ros_node+'/action_handler')
+        weiActionClient = self.create_client(WeiAction,ros_node+'/action_handler')
         while not weiActionClient.wait_for_service(timeout_sec=1.0):
             self.get_logger().info(ros_node + ' service not available, waiting again...')
-        weiReq = WeiActions.Request()
+        weiReq = WeiAction.Request()
         weiReq.action_handle=str(action_handle)
         weiReq.vars=json.dumps(action_vars)
         print(weiReq.vars)
@@ -102,13 +99,12 @@ class weiExecNode(Node):
 class ROS2Interface(Interface):
 
     @staticmethod
-    def main(name, args = None) -> Any:
+    def __init_rclpy(name="'weiExecNode')", args = None) -> Any:
         if not rclpy:
             raise ImportError("ROS2 environment not found")
         if not rclpy.utilities.ok():
             rclpy.init(args=args)
             print("Started RCLPY")
-            
             wei_execution_node = weiExecNode(name)
         else:
             print("RCLPY OK ")

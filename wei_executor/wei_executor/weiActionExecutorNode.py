@@ -39,7 +39,7 @@ class weiExecNode(Node):
         rclpy.spin_until_future_complete(self, self._send_goal_future) 
         self._send_goal_future.add_done_callback(self.goal_response_callback)
 
-        return self.result
+        return self.result["action_response"], self.result["action_log"]
     
     def goal_response_callback(self, future) -> None:
         goal_handle = future.result()
@@ -165,21 +165,14 @@ class ROS2Interface(Interface):
             print(msg)
             print()
         action_response = ""
-        action_msg = ""
         action_log = ""
-        (
-            action_response,
-            action_msg,
-            action_log,
-        ) = wei_execution_node.send_wei_command(
-            msg["node"], msg["action_handle"], msg["action_vars"]
-        )
-        if action_msg and kwargs.get("verbose", False):
-            print(action_msg)
+        (action_response, action_log) = wei_execution_node.send_wei_command(msg["node"], msg["action_handle"], msg["action_vars"])
+        if action_response and kwargs.get("verbose", False):
+            print(action_response)
         rclpy.spin_once(wei_execution_node)
         wei_execution_node.destroy_node()
         rclpy.shutdown()
-        return action_response, action_msg, action_log
+        return action_response, action_log
 
     @staticmethod
     def get_state(module: Module, **kwargs: Any) -> str:

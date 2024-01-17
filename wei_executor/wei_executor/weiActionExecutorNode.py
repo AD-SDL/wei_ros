@@ -134,7 +134,7 @@ class ROS2Interface(Interface):
 
     @staticmethod
     def send_action(step: Step, module: Module, **kwargs: Any) -> Tuple[str, str, str]:
-        """Executes a single step from a workflow using a ZMQ messaging framework with the ZMQ library
+        """Executes a single step from a workflow 
 
         Parameters
         ----------
@@ -145,8 +145,6 @@ class ROS2Interface(Interface):
         -------
         action_response: StepStatus
             A status of the step (in theory provides async support with IDLE, RUNNING, but for now is just SUCCEEDED/FAILED)
-        action_msg: str
-            the data or information returned from running the step.
         action_log: str
             A record of the execution of the step
 
@@ -164,14 +162,18 @@ class ROS2Interface(Interface):
             print("\n Callback message:")
             print(msg)
             print()
+
         action_response = ""
         action_log = ""
         (action_response, action_log) = wei_execution_node.send_wei_command(msg["node"], msg["action_handle"], msg["action_vars"])
+        
         if action_response and kwargs.get("verbose", False):
             print(action_response)
+        
         rclpy.spin_once(wei_execution_node)
         wei_execution_node.destroy_node()
         rclpy.shutdown()
+        
         return action_response, action_log
 
     @staticmethod
@@ -188,7 +190,9 @@ class ROS2Interface(Interface):
     
 if __name__ == "__main__":
     rclpy.init()
-    node = weiExecNode()
-
-    node.send_wei_goal("/ur_module","pick")
-
+    # node = weiExecNode()
+    # node.send_wei_goal("/ur_module","pick")
+    node = ROS2Interface()
+    step = None
+    module = None
+    node.send_action(step,module)

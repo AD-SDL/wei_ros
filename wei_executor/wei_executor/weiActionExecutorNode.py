@@ -157,7 +157,7 @@ class ROS2Interface(Interface):
             "action_handle": step.action,
             "action_vars": step.args,
         }
-
+        print(msg)
         if kwargs.get("verbose", False):
             print("\n Callback message:")
             print(msg)
@@ -192,7 +192,11 @@ if __name__ == "__main__":
     rclpy.init()
     # node = weiExecNode()
     # node.send_wei_goal("/ur_module","pick")
-    node = ROS2Interface()
-    step = None
-    module = None
+    node = ROS2Interface(name="WeiActionExecuter")
+    name = "run demo"
+    module = "ur_node"
+    action = "pick"
+    step = Step(name=name, module=module,action=action)
+    module = Module(name=name, module=module,action=action, interface="wei_ros_node", config={"ros_node_address":"ur_node"})
+    module
     node.send_action(step,module)

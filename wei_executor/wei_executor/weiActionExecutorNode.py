@@ -152,20 +152,21 @@ class ROS2Interface(Interface):
         wei_execution_node = ROS2Interface.__init_rclpy(
             Config.workcell_name + "_exec_node"
         )
+        
         msg = {
             "node": module.config["ros_node_address"],
-            "action_handle": step.action,
-            "action_vars": step.args,
+            "action_goal": {step.action:step.args}
         }
         print(msg)
+
         if kwargs.get("verbose", False):
             print("\n Callback message:")
             print(msg)
-            print()
+            # print()
 
         action_response = ""
         action_log = ""
-        (action_response, action_log) = wei_execution_node.send_wei_command(msg["node"], msg["action_handle"], msg["action_vars"])
+        (action_response, action_log) = wei_execution_node.send_wei_goal(msg["node"], msg["action_goal"])
         
         if action_response and kwargs.get("verbose", False):
             print(action_response)

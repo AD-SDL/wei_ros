@@ -25,16 +25,17 @@ class weiExecNode(Node):
    
     def send_wei_goal(self, ros_node, wei_goal) -> None:
         """Send action goal"""
-        print("AAAAAAAAAA")
+        # print("AAAAAAAAAA")
         self._action_client = ActionClient(self, WeiAction, ros_node + '/wei_action')
-        print("AAAAAAAAAA")
+        # print("AAAAAAAAAA")
 
         # while not self._action_client.wait_for_server():
         #     self.get_logger().info(ros_node + 'Action server not available, waiting ...')
 
-        self.goal = json.dumps(wei_goal)
+        self.goal = json.dumps({"pick_tool":{"home":[1,1,1],"tool_loc":[1,1,1]}})
         print(self.goal)
         weiGoal = WeiAction.Goal()
+        print(weiGoal)
         weiGoal.wei_goal = self.goal
         print(weiGoal)
         self._send_goal_future = self._action_client.send_goal_async(weiGoal, feedback_callback=self.feedback_callback)
@@ -154,13 +155,13 @@ class ROS2Interface(Interface):
         wei_execution_node = ROS2Interface.__init_rclpy(
             module.config["ros_node_address"]
         )
-        print(Config.workcell_name + "_exec_node")
+        # print(Config.workcell_name + "_exec_node")
         
         msg = {
             "node": module.config["ros_node_address"],
             "action_goal": {step.action:step.args}
         }
-        print(msg)
+        # print(msg)
 
         if kwargs.get("verbose", False):
             print("\n Callback message:")
@@ -200,7 +201,7 @@ if __name__ == "__main__":
     name = "run demo"
     module_name = "ur_node"
     action = "pick"
-    step = Step(name=name, module=module_name,action=action)
+    step = Step(name=name, module=module_name,action=action, vars = {"home":[1,1,1],"tool_loc":[1,1,1]})
     module = Module(name=name, module=module_name,action=action, interface="wei_ros_node", config={"ros_node_address":"ur_node"})
 
     node.send_action(step,module)

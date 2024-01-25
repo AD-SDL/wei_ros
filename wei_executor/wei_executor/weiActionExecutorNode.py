@@ -1,4 +1,5 @@
 from typing import Any, Dict, Tuple
+from time import sleep
 
 from wei.config import Config
 from wei.core.data_classes import Interface, Module, Step
@@ -25,14 +26,14 @@ class weiExecNode(Node):
    
     def send_wei_goal(self, ros_node, wei_goal) -> None:
         """Send action goal"""
-        # print("AAAAAAAAAA")
-        self._action_client = ActionClient(self, WeiAction, ros_node + '/wei_action')
-        # print("AAAAAAAAAA")
+        action_client_node = ros_node + '/wei_action'
+        self._action_client = ActionClient(self, WeiAction, action_client_node)
 
-        # while not self._action_client.wait_for_server():
-        #     self.get_logger().info(ros_node + 'Action server not available, waiting ...')
+        while not self._action_client.server_is_ready():
+            self.get_logger().info(action_client_node + ' Action server not available, waiting ...')
+            sleep(1)
 
-        self.goal = json.dumps({"pick_tool":{"home":[1,1,1],"tool_loc":[1,1,1]}})
+        self.goal = json.dumps(wei_goal)
         print(self.goal)
         weiGoal = WeiAction.Goal()
         print(weiGoal)
@@ -152,16 +153,14 @@ class ROS2Interface(Interface):
             A record of the execution of the step
 
         """
-        wei_execution_node = ROS2Interface.__init_rclpy(
-            module.config["ros_node_address"]
-        )
-        # print(Config.workcell_name + "_exec_node")
+        wei_execution_node = ROS2Interface.__init_rclpy(Config.workcell_name + "_exec_node")
         
         msg = {
             "node": module.config["ros_node_address"],
             "action_goal": {step.action:step.args}
         }
-        # print(msg)
+        print(msg["action_goal"])
+        print({"pick_tool":{"home":[1,1,1],"tool_loc":[1,1,1]}})
 
         if kwargs.get("verbose", False):
             print("\n Callback message:")
@@ -200,8 +199,8 @@ if __name__ == "__main__":
     node = ROS2Interface(name="WeiActionExecuter")
     name = "run demo"
     module_name = "ur_node"
-    action = "pick"
-    step = Step(name=name, module=module_name,action=action, vars = {"home":[1,1,1],"tool_loc":[1,1,1]})
+    action = "pick_tool"
+    step = Step(name=name, module=module_name,action=action, args = {"home":[1,1,1],"tool_loc":[1,1,1]})
     module = Module(name=name, module=module_name,action=action, interface="wei_ros_node", config={"ros_node_address":"ur_node"})
 
     node.send_action(step,module)

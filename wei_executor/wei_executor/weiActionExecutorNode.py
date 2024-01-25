@@ -105,7 +105,7 @@ class weiExecNode(Node):
 class ROS2Interface(Interface):
 
     @staticmethod
-    def __init_rclpy(name="'weiExecNode')", args = None) -> Any:
+    def __init_rclpy(name="weiExecNode", args = None) -> Any:
         if not rclpy:
             raise ImportError("ROS2 environment not found")
         if not rclpy.utilities.ok():
@@ -153,14 +153,12 @@ class ROS2Interface(Interface):
             A record of the execution of the step
 
         """
-        wei_execution_node = ROS2Interface.__init_rclpy(Config.workcell_name + "_exec_node")
+        wei_execution_node = ROS2Interface.__init_rclpy()
         
         msg = {
             "node": module.config["ros_node_address"],
             "action_goal": {step.action:step.args}
         }
-        print(msg["action_goal"])
-        print({"pick_tool":{"home":[1,1,1],"tool_loc":[1,1,1]}})
 
         if kwargs.get("verbose", False):
             print("\n Callback message:")
@@ -183,9 +181,7 @@ class ROS2Interface(Interface):
     @staticmethod
     def get_state(module: Module, **kwargs: Any) -> str:
         """Gets the state of the module and returns it."""
-        wei_execution_node = ROS2Interface.__init_rclpy(
-            Config.workcell_name + "_wei_exec_node"
-        )
+        wei_execution_node = ROS2Interface.__init_rclpy()
         state = wei_execution_node.get_state(module.config["ros_node_address"])
         rclpy.spin_once(wei_execution_node)
         wei_execution_node.destroy_node()
@@ -194,8 +190,7 @@ class ROS2Interface(Interface):
     
 if __name__ == "__main__":
     rclpy.init()
-    # node = weiExecNode()
-    # node.send_wei_goal("/ur_module","pick")
+ 
     node = ROS2Interface(name="WeiActionExecuter")
     name = "run demo"
     module_name = "ur_node"

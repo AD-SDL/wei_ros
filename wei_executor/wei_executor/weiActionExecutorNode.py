@@ -25,13 +25,15 @@ class weiExecNode(Node):
    
     def send_wei_goal(self, ros_node, wei_goal) -> None:
         """Send action goal"""
-        
+        print("AAAAAAAAAA")
         self._action_client = ActionClient(self, WeiAction, ros_node + '/wei_action')
-        while not self._action_client.wait_for_server():
-            self.get_logger().info(ros_node + 'Action server not available, waiting ...')
+        print("AAAAAAAAAA")
+
+        # while not self._action_client.wait_for_server():
+        #     self.get_logger().info(ros_node + 'Action server not available, waiting ...')
 
         self.goal = json.dumps(wei_goal)
-        
+        print(self.goal)
         weiGoal = WeiAction.Goal()
         weiGoal.wei_goal = self.goal
         print(weiGoal)
@@ -150,8 +152,9 @@ class ROS2Interface(Interface):
 
         """
         wei_execution_node = ROS2Interface.__init_rclpy(
-            Config.workcell_name + "_exec_node"
+            module.config["ros_node_address"]
         )
+        print(Config.workcell_name + "_exec_node")
         
         msg = {
             "node": module.config["ros_node_address"],
@@ -171,7 +174,7 @@ class ROS2Interface(Interface):
         if action_response and kwargs.get("verbose", False):
             print(action_response)
         
-        rclpy.spin_once(wei_execution_node)
+        rclpy.spin(wei_execution_node)
         wei_execution_node.destroy_node()
         rclpy.shutdown()
         
@@ -195,9 +198,9 @@ if __name__ == "__main__":
     # node.send_wei_goal("/ur_module","pick")
     node = ROS2Interface(name="WeiActionExecuter")
     name = "run demo"
-    module = "ur_node"
+    module_name = "ur_node"
     action = "pick"
-    step = Step(name=name, module=module,action=action)
-    module = Module(name=name, module=module,action=action, interface="wei_ros_node", config={"ros_node_address":"ur_node"})
-    module
+    step = Step(name=name, module=module_name,action=action)
+    module = Module(name=name, module=module_name,action=action, interface="wei_ros_node", config={"ros_node_address":"ur_node"})
+
     node.send_action(step,module)
